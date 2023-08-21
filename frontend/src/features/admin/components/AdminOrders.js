@@ -159,11 +159,11 @@ function AdminOrders() {
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
-                {orders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="border-b border-gray-200 hover:bg-gray-100"
-                  >
+                  {orders.map((order) => (
+                    <tr
+                      key={order.id}
+                      className="border-b border-gray-200 hover:bg-gray-100"
+                    >
                     <td className="py-3 px-0 text-left whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="mr-2"></div>
@@ -174,15 +174,20 @@ function AdminOrders() {
                       {order.items.map((item, index) => (
                         <div key={index} className="flex items-center">
                           <div className="mr-2">
-                            <img
-                              className="w-6 h-6 rounded-full"
-                              src={item.product.thumbnail}
-                              alt={item.product.title}
-                            />
+                            {/* Debugging statement */}
+                            {console.log(item.product)}
+                            {/* Render the image if product and thumbnail exist */}
+                            {item.product && item.product.thumbnail && (
+                              <img
+                                className="w-6 h-6 rounded-full"
+                                src={item.product.thumbnail}
+                                alt={item.product.title}
+                              />
+                            )}
+                            {/* Render other item details */}
                           </div>
                           <span>
-                            {item.product.title} - #{item.quantity} - $
-                            {item.product.discountPrice}
+                            {/* Render item details */}
                           </span>
                         </div>
                       ))}
