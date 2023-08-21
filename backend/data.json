@@ -1841,6 +1841,7 @@
       ]
     },
     {
+      "id": 101,
       "title": "Mac Book Air ",
       "description": "Mac Book Air ",
       "brand": "Apple",
@@ -1854,10 +1855,11 @@
         "https://i.dummyjson.com/data/products/6/thumbnail.png",
         "https://i.dummyjson.com/data/products/6/thumbnail.png",
         "https://i.dummyjson.com/data/products/6/thumbnail.png"
-      ],
-      "id": 101
+      ]
     }
   ],
+
+
   "brands": [
     {
       "value": "Apple",
