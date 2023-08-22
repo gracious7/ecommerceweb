@@ -65,7 +65,7 @@ export const cartSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(addToCartAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = 'idle';    
         state.items.push(action.payload);
       })
       .addCase(fetchItemsByUserIdAsync.pending, (state) => {
@@ -105,6 +105,17 @@ export const cartSlice = createSlice({
       })
   },
 });
+
+//delete all item
+export const deleteAllItemsFromCartAsync = createAsyncThunk( 
+  'cart/deleteAllItems', 
+  async (_, { dispatch, getState }) => { 
+    const itemsToDelete = selectItems(getState()); // Assuming you have a selector 
+    itemsToDelete.forEach(item => { 
+      dispatch(deleteItemFromCartAsync(item.id)); 
+    }); 
+  } 
+);
 
 // export const { increment } = cartSlice.actions;
 

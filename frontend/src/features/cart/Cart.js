@@ -6,6 +6,7 @@ import {
   selectCartStatus,
   selectItems,
   updateCartAsync,
+  deleteAllItemsFromCartAsync,
 } from './cartSlice';
 import { Link } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
@@ -20,11 +21,24 @@ export default function Cart() {
   const cartLoaded = useSelector(selectCartLoaded)
   const [openModal, setOpenModal] = useState(null);
 
-  const totalAmount = items.reduce(
+  // const totalAmount = items.reduce(
     
-    (amount, item) => Math.round(item.product.price*(1-item.product.discountPercentage/100)) * item.quantity + amount,
+  //   (amount, item) => Math.round(item.product.price*(1-item.product.discountPercentage/100)) * item.quantity + amount,
+  //   0
+  // );
+
+  const handleDeleteAllItems = () => { 
+    dispatch(deleteAllItemsFromCartAsync()); // Dispatch the action to delete all items 
+  };
+
+  const totalAmount = items.reduce(
+    (amount, item) => 
+      item.product ? 
+      Math.round(item.product.price * (1 - item.product.discountPercentage / 100)) * item.quantity + amount : 
+      amount,
     0
   );
+  
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
 
   const handleQuantity = (e, item) => {
@@ -63,8 +77,10 @@ export default function Cart() {
                   <li key={item.id} className="flex py-6">
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <img
-                        src={item.product.thumbnail}
-                        alt={item.product.title}
+                        // src={item.product.thumbnail}
+                        src={item.product?.thumbnail}
+
+                        alt={item.product?.title}
                         className="h-full w-full object-cover object-center"
                       />
                     </div>
@@ -73,7 +89,7 @@ export default function Cart() {
                       <div>
                         <div className="flex justify-between text-base font-medium text-gray-900">
                           <h3>
-                            <a href={item.product.id}>{item.product.title}</a>
+                            <a href={item.product?.id}>{item.product.title}</a>
                           </h3>
                            
                           <p className="ml-4">Rs.{Math.round(item.product.price*(1-item.product.discountPercentage/100))}</p>
@@ -131,7 +147,8 @@ export default function Cart() {
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between my-2 text-base font-medium text-gray-900">
               <p>Subtotal</p>
-              <p>Rs. {totalAmount}</p>
+              <p>Rs. {totalAmount} </p>
+              
             </div>
             <div className="flex justify-between my-2 text-base font-medium text-gray-900">
               <p>Total Items in Cart</p>
@@ -165,6 +182,18 @@ export default function Cart() {
           </div>
         </div>
       </div>
+      <div className="mt-6 flex justify-center text-center text-sm text-gray-500"> 
+        <p> 
+          <button 
+            type="button" 
+            className="font-medium text-red-600 hover:text-red-500" 
+            onClick={handleDeleteAllItems} // Add the click handler 
+          > 
+            Delete Entire Cart 
+          </button> 
+        </p> 
+      </div>
+
     </>
   );
 }
