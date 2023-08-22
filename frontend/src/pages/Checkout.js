@@ -16,6 +16,7 @@ import {
 } from '../features/order/orderSlice';
 import { selectUserInfo } from '../features/user/userSlice';
 import { Grid } from 'react-loader-spinner';
+import { Toaster, toast } from 'react-hot-toast';
 
 function Checkout() {
   const dispatch = useDispatch();
@@ -31,10 +32,53 @@ function Checkout() {
   const status = useSelector(selectStatus);
   const currentOrder = useSelector(selectCurrentOrder);
 
+//checking tax rate
+  const calculateTaxRate = (item) => {
+    if (item.product.type === "product") {
+      if (item.product.price > 1000 && item.product.price <= 5000) {
+        return 0.12; // PA
+      } else if (item.product.price > 5000) {
+        return 0.18; // PB
+      }
+      else{
+        return 0.35;
+      }
+    } else if (item.product.type === "service") {
+      if (item.product.price > 1000 && item.product.price <= 8000) {
+        return 0.1; // SA
+      } else if (item.product.price > 8000) {
+        return 0.15; // SB
+      }
+      else{
+        return 0.35;
+      }
+    }
+    return 0; // Default tax rate
+  };
+
+  //calculating total amount after tax
   const totalAmount = items.reduce(
-    (amount, item) => item.product.discountPrice * item.quantity + amount,
+    (amount, item) => {
+      const taxRate = calculateTaxRate(item);
+      const priceAfterDiscount = Math.round(item.product.price * (1 - item.product.discountPercentage / 100));
+      const itemTotal = priceAfterDiscount * item.quantity * (1 + taxRate);
+      return (itemTotal + amount.toFixed(2));
+    },
     0
   );
+
+  //tax price
+  const taxprice = items.reduce(
+    (amount, item) => {
+      const taxRate = calculateTaxRate(item);
+      const priceAfterDiscount = Math.round(item.product.price * (1 - item.product.discountPercentage / 100));
+      const itemTotal = priceAfterDiscount * item.quantity * ( taxRate);
+      return itemTotal.toFixed(2) ;
+    },
+    0
+  );
+
+
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
 
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -55,7 +99,13 @@ function Checkout() {
 
   const handlePayment = (e) => {
     console.log(e.target.value);
-    setPaymentMethod(e.target.value);
+    if(e.target.value === "card"){
+      toast.error("Card method is currently not available trye again later!")
+    }
+    else{
+      setPaymentMethod(e.target.value);
+
+    }
   };
 
   const handleOrder = (e) => {
@@ -73,12 +123,13 @@ function Checkout() {
       // need to redirect from here to a new page of order success.
     } else {
       
-      alert('Enter Address and Payment method');
+      toast.error('Enter Address and Payment method');
     }
   };
 
   return (
     <>
+      <Toaster/>
       {!items.length && <Navigate to="/" replace={true}></Navigate>}
       {currentOrder && currentOrder.paymentMethod === 'cash' && (
         <Navigate
@@ -428,7 +479,7 @@ function Checkout() {
                                 </a>
                               </h3>
                               <p className="ml-4">
-                                Rs. {item.product.discountPrice}
+                                Rs. {Math.round(item.product.price * (1 - item.product.discountPercentage / 100))}
                               </p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
@@ -474,7 +525,11 @@ function Checkout() {
 
               <div className="border-t border-gray-200 px-2 py-6 sm:px-2">
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
-                  <p>Subtotal</p>
+                  <p>Tax</p>
+                  <p>Rs. {taxprice}</p>
+                </div>
+                <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+                  <p>Total Amount</p>
                   <p>Rs. {totalAmount}</p>
                 </div>
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
