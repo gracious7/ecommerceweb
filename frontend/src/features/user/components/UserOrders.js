@@ -48,7 +48,7 @@ export default function UserOrders() {
                               <h3>
                                 <a href={item.product.id}>{item.product.title}</a>
                               </h3>
-                              <p className="ml-4">${item.product.discountPrice}</p>
+                              <p className="ml-4">Rs.{Math.round(item.product.price * (1 - item.product.discountPercentage / 100))}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
                               {item.product.brand}
