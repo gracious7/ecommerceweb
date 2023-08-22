@@ -177,21 +177,21 @@ export default function Cart() {
                     <span aria-hidden="true"> &rarr;</span>
                   </button>
                 </Link>
+              <div className="mt-6 flex justify-center text-center text-sm text-gray-500"> 
+                <p> 
+                  <button 
+                    type="button" 
+                    className="font-medium text-red-600 hover:text-red-500" 
+                    onClick={handleDeleteAllItems} // Add the click handler 
+                  > 
+                    Delete Entire Cart 
+                  </button> 
+                </p> 
+              </div>
               </p>
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-6 flex justify-center text-center text-sm text-gray-500"> 
-        <p> 
-          <button 
-            type="button" 
-            className="font-medium text-red-600 hover:text-red-500" 
-            onClick={handleDeleteAllItems} // Add the click handler 
-          > 
-            Delete Entire Cart 
-          </button> 
-        </p> 
       </div>
 
     </>
