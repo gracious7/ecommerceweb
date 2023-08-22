@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { Grid } from 'react-loader-spinner';
 import Modal from '../common/Modal';
+import { Toaster, toast } from 'react-hot-toast';
 
 export default function Cart() {
   const dispatch = useDispatch();
@@ -31,13 +32,61 @@ export default function Cart() {
     dispatch(deleteAllItemsFromCartAsync()); // Dispatch the action to delete all items 
   };
 
-  const totalAmount = items.reduce(
+
+  //checking tax
+  const calculateTaxRate = (item) => {
+    if (item.product.type === "product") {
+      if (item.product.price > 1000 && item.product.price <= 5000) {
+        return 0.12; // PA
+      } else if (item.product.price > 5000) {
+        return 0.18; // PB
+      }
+      else{
+        return 0.35;
+      }
+    } else if (item.product.type === "service") {
+      if (item.product.price > 1000 && item.product.price <= 8000) {
+        return 0.1; // SA
+      } else if (item.product.price > 8000) {
+        return 0.15; // SB
+      }
+      else{
+        return 0.35;
+      }
+    }
+    return 0; // Default tax rate
+  };
+
+  const totalAmountbeforetax = items.reduce(
     (amount, item) => 
       item.product ? 
       Math.round(item.product.price * (1 - item.product.discountPercentage / 100)) * item.quantity + amount : 
       amount,
     0
   );
+  
+    //calculating total amount after tax
+  const totalAmount = items.reduce(
+    (amount, item) => {
+      const taxRate = calculateTaxRate(item);
+      const priceAfterDiscount = Math.round(item.product.price * (1 - item.product.discountPercentage / 100));
+      const itemTotal = priceAfterDiscount * item.quantity * (1 + taxRate);
+      return (itemTotal + amount).toFixed(2);
+    },
+    0
+  );
+  
+  //tax price
+  const taxprice = items.reduce(
+    (amount, item) => {
+      const taxRate = calculateTaxRate(item);
+      const priceAfterDiscount = Math.round(item.product.price * (1 - item.product.discountPercentage / 100));
+      const itemTotal = priceAfterDiscount * item.quantity * ( taxRate);
+      return itemTotal.toFixed(2) ;
+    },
+    0
+  );
+
   
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
 
@@ -51,6 +100,7 @@ export default function Cart() {
 
   return (
     <>
+    <Toaster/>
       {!items.length && cartLoaded && <Navigate to="/" replace={true}></Navigate>}
 
       <div>
@@ -147,7 +197,17 @@ export default function Cart() {
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between my-2 text-base font-medium text-gray-900">
               <p>Subtotal</p>
-              <p>Rs. {totalAmount} </p>
+              <p>Rs. {totalAmountbeforetax} </p>
+              
+            </div>
+            <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+              <p>Total Tax</p>
+              <p>Rs. {taxprice} </p>
+              
+            </div>
+            <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+              <p>Total Amount After Tax</p>
+              <p>Rs. {totalAmount}</p>
               
             </div>
             <div className="flex justify-between my-2 text-base font-medium text-gray-900">
