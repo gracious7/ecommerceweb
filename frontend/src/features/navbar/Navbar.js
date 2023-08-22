@@ -48,6 +48,10 @@ function NavBar({ children }) {
                           src="/ecommerce.png"
                           alt="Your Company"
                         />
+                        <img
+                          className=''
+                          src='swiftmart.png'
+                        />
                       </Link>
                     </div>
                     <div className="hidden md:block">
