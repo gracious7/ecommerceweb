@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { addToCart, deleteItemFromCart, fetchItemsByUserId, resetCart, updateCart } from './cartAPI';
+import { Toaster, toast } from 'react-hot-toast';
 
 const initialState = {
   status: 'idle',
