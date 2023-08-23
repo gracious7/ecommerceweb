@@ -62,7 +62,7 @@ function Checkout() {
       const taxRate = calculateTaxRate(item);
       const priceAfterDiscount = Math.round(item.product.price * (1 - item.product.discountPercentage / 100));
       const itemTotal = priceAfterDiscount * item.quantity * (1 + taxRate);
-      return (itemTotal + amount);
+      return (itemTotal + amount).toFixed(2) ;
     },
     0
   );
@@ -73,7 +73,7 @@ function Checkout() {
       const taxRate = calculateTaxRate(item);
       const priceAfterDiscount = Math.round(item.product.price * (1 - item.product.discountPercentage / 100));
       const itemTotal = priceAfterDiscount * item.quantity * ( taxRate);
-      return itemTotal;
+      return itemTotal.toFixed(2)  ;
     },
     0
   );
